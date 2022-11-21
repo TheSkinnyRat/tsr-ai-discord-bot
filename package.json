@@ -1,0 +1,34 @@
+{
+  "name": "tsr-ai",
+  "version": "1.0.0",
+  "description": "Artificial intelligence Discord BOT by TheSkinnyRat",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TheSkinnyRat/tsr-ai.git"
+  },
+  "keywords": [
+    "AI",
+    "OpenAI",
+    "Discord",
+    "Bot"
+  ],
+  "author": "TheSkinnyRat",
+  "license": "Private License",
+  "bugs": {
+    "url": "https://github.com/TheSkinnyRat/tsr-ai/issues"
+  },
+  "homepage": "https://github.com/TheSkinnyRat/tsr-ai#readme",
+  "dependencies": {
+    "discord.js": "^14.6.0",
+    "dotenv": "^16.0.3"
+  },
+  "devDependencies": {
+    "eslint": "^8.28.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.26.0"
+  }
+}
