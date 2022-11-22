@@ -1,0 +1,189 @@
+const {
+  EmbedBuilder,
+  CommandInteraction,
+  ActionRowBuilder,
+  ButtonBuilder,
+  ButtonStyle,
+  ApplicationCommandOptionType,
+} = require('discord.js');
+const MusicBot = require('../../structures/Client');
+
+module.exports = {
+  name: 'help',
+  category: 'Information',
+  description: 'Return all commands, or one specific command',
+  userPermissions: false,
+  options: [
+    {
+      type: ApplicationCommandOptionType.String,
+      name: 'command',
+      description: 'The command you want to get help for',
+      required: false,
+    },
+  ],
+
+  /**
+   *
+   * @param {MusicBot} client The instantiating client
+   * @param {CommandInteraction} interaction The interaction
+   */
+  run: async (client, interaction) => {
+    if (!interaction.options.getString('command')) {
+      const embed = new EmbedBuilder()
+        .setTitle(`${client.user.username} Help`)
+        .setDescription(`Hello **<@${interaction.member.user.id}>**, I am <@${client.user.id}>.\n
+         A Discord Music Bot With Many Awesome Features,
+         Support Many Sources
+
+         **Now, ${client.user.username} is only using slash commands.**
+         \`/<command name>\`
+         
+         **You can see command details by typing**
+         \`/help <command name>\`
+         
+         *› Choose an category button below to see commands*\n\n`)
+        .setThumbnail(client.user.displayAvatarURL())
+        .setColor(client.embedColor)
+        .setTimestamp()
+        .setFooter({ text: `Requested by ${interaction.member.user.tag}`, iconURL: interaction.member.user.displayAvatarURL({ dynamic: true }) });
+
+      const but1 = new ButtonBuilder().setCustomId('home').setLabel('Home').setStyle(ButtonStyle.Success);
+
+      const but2 = new ButtonBuilder().setCustomId('music').setLabel('Music').setStyle(ButtonStyle.Primary);
+
+      const but3 = new ButtonBuilder().setCustomId('info').setLabel('Info').setStyle(ButtonStyle.Primary);
+
+      // const but4 = new ButtonBuilder()
+      //   .setCustomId('playlist')
+      //   .setLabel('Playlist')
+      //   .setStyle(ButtonStyle.Primary);
+
+      const butMore1 = new ButtonBuilder().setCustomId('butMore1').setLabel('More').setStyle(ButtonStyle.Secondary);
+
+      const but5 = new ButtonBuilder().setCustomId('config').setLabel('Config').setStyle(ButtonStyle.Primary);
+
+      const but6 = new ButtonBuilder().setCustomId('fun').setLabel('Fun').setStyle(ButtonStyle.Primary);
+
+      const butExpired = new ButtonBuilder().setCustomId('butExpired').setLabel('Interaction Button Expired').setStyle(ButtonStyle.Secondary)
+        .setDisabled(true);
+
+      let commands;
+      const editEmbed = new EmbedBuilder();
+
+      await interaction.reply({
+        embeds: [embed],
+        components: [
+          new ActionRowBuilder().addComponents(
+            but1,
+            but2,
+            but3,
+            // but4,
+            butMore1,
+          ),
+        ],
+      });
+
+      const collector = interaction.channel.createMessageComponentCollector({
+        filter: (interactionFilter) => {
+          if (interactionFilter.user.id === interaction.member.user.id) return true;
+          interactionFilter.reply({ ephemeral: true, content: `Only **${interaction.member.user.tag}** can use this button, if you want then you've to run the command again.` });
+          return false;
+        },
+        time: 60000,
+        idle: 60000 / 2,
+      });
+      collector.on('collect', async (interactionCollector) => {
+        if (!interactionCollector.deferred) await interactionCollector.deferUpdate();
+        if (interactionCollector.customId === 'home') {
+          return interactionCollector.editReply({
+            embeds: [embed],
+            components: [new ActionRowBuilder().addComponents(
+              but1,
+              but2,
+              but3,
+              butMore1,
+            )],
+          });
+        }
+        if (interactionCollector.customId === 'music') {
+          commands = client.slashCommands.filter((x) => x.category && x.category === 'Music').map((x) => `\`${x.name}\``);
+          editEmbed.setColor(client.embedColor).setDescription(commands.join(', ')).setTitle('Music Commands').setFooter({ text: `Total ${commands.length} music commands.` });
+          return interactionCollector.editReply({
+            embeds: [editEmbed],
+            components: [new ActionRowBuilder().addComponents(but1, but2, but3, butMore1)],
+          });
+        }
+        if (interactionCollector.customId === 'info') {
+          commands = client.slashCommands.filter((x) => x.category && x.category === 'Information').map((x) => `\`${x.name}\``);
+          editEmbed.setColor(client.embedColor).setDescription(commands.join(', ')).setTitle('Information Commands').setFooter({ text: `Total ${commands.length} Information commands.` });
+          return interactionCollector.editReply({
+            embeds: [editEmbed],
+            components: [new ActionRowBuilder().addComponents(but1, but2, but3, butMore1)],
+          });
+        }
+        // if (interactionCollector.customId === 'playlist') {
+        //   commands = client.slashCommands
+        //     .filter((x) => x.category && x.category === 'Playlist')
+        //     .map((x) => `\`${x.name}\``);
+        //   editEmbed
+        //     .setColor(client.embedColor)
+        //     .setDescription(commands.join(', '))
+        //     .setTitle('Playlist Commands')
+        //     .setFooter({ text: `Total ${commands.length} Playlist commands.` });
+        //   return interactionCollector.editReply({
+        //     embeds: [editEmbed],
+        //     components: [new ActionRowBuilder().addComponents(but1, but2, but3, but4, butMore1)],
+        //   });
+        // }
+        if (interactionCollector.customId === 'butMore1') {
+          return interactionCollector.editReply({
+            components: [new ActionRowBuilder().addComponents(but1, but5, but6)],
+          });
+        }
+        if (interactionCollector.customId === 'config') {
+          commands = client.slashCommands.filter((x) => x.category && x.category === 'Config').map((x) => `\`${x.name}\``);
+          editEmbed.setColor(client.embedColor).setDescription(commands.join(', ')).setTitle('Config Commands').setFooter({ text: `Total ${commands.length} Config commands.` });
+          return interactionCollector.editReply({
+            embeds: [editEmbed],
+            components: [new ActionRowBuilder().addComponents(but1, but5, but6)],
+          });
+        }
+        if (interactionCollector.customId === 'fun') {
+          commands = client.slashCommands.filter((x) => x.category && x.category === 'Fun').map((x) => `\`${x.name}\``);
+          editEmbed.setColor(client.embedColor).setDescription(commands.join(', ')).setTitle('Fun Commands').setFooter({ text: `Total ${commands.length} Fun commands.` });
+          return interactionCollector.editReply({
+            embeds: [editEmbed],
+            components: [new ActionRowBuilder().addComponents(but1, but5, but6)],
+          });
+        }
+        return undefined;
+      });
+      collector.on('end', async () => {
+        await interaction.editReply({
+          components: [new ActionRowBuilder().addComponents(butExpired)],
+        });
+      });
+    } else {
+      const cmd = client.slashCommands.get(interaction.options.getString('command'));
+      if (!cmd) {
+        return interaction.reply({ ephemeral: true, embeds: [new EmbedBuilder().setColor(client.embedColor).setDescription('❌ | Unable to find that command.')] });
+      }
+      const embed = new EmbedBuilder()
+        .setColor('Green')
+        .setTitle(`Command: ${cmd.name}`)
+        .setDescription(cmd.description)
+        .addFields(
+          { name: 'Category', value: cmd.category },
+          {
+            name: 'Permission',
+            value: cmd.userPermissions ? cmd.userPermissions.join(', ') : 'No Required Permission',
+          },
+          { name: 'Required DJ', value: cmd.dj ? 'Yes' : 'No' },
+        )
+        .setFooter({ text: `Requested by ${interaction.member.user.tag}`, iconURL: interaction.member.user.displayAvatarURL({ dynamic: true }) });
+
+      return interaction.reply({ embeds: [embed] });
+    }
+    return undefined;
+  },
+};

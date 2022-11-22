@@ -2,9 +2,11 @@
   "name": "tsr-ai",
   "version": "1.0.0",
   "description": "Artificial intelligence Discord BOT by TheSkinnyRat",
-  "main": "index.js",
+  "type": "module",
+  "main": "src/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node sharder.js",
+    "lint": "eslint src"
   },
   "repository": {
     "type": "git",
@@ -23,12 +25,17 @@
   },
   "homepage": "https://github.com/TheSkinnyRat/tsr-ai#readme",
   "dependencies": {
+    "chalk": "^5.1.2",
     "discord.js": "^14.6.0",
-    "dotenv": "^16.0.3"
+    "dotenv": "^16.0.3",
+    "moment": "^2.29.4",
+    "node-superfetch": "^0.3.3",
+    "openai": "^3.1.0"
   },
   "devDependencies": {
     "eslint": "^8.28.0",
     "eslint-config-airbnb-base": "^15.0.0",
-    "eslint-plugin-import": "^2.26.0"
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-jsdoc": "^39.6.2"
   }
 }
