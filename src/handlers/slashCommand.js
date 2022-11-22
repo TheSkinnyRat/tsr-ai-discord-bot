@@ -21,13 +21,13 @@ export default async (client) => {
           } application command name is required.`,
         );
       }
-      if (!slashCommands.description) {
-        return console.error(
-          `slashCommandDescriptionError: ${
-            slashCommands.split('.')[0]
-          } application command description is required.`,
-        );
-      }
+      // if (!slashCommands.description) {
+      //   return console.error(
+      //     `slashCommandDescriptionError: ${
+      //       slashCommands.split('.')[0]
+      //     } application command description is required.`,
+      //   );
+      // }
 
       client.slashCommands.set(slashCommands.name, slashCommands);
       data.push({
