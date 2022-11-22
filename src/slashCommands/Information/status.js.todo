@@ -1,0 +1,58 @@
+const {
+  EmbedBuilder, CommandInteraction, version,
+} = require('discord.js');
+const moment = require('moment');
+require('moment-duration-format');
+const os = require('os');
+const si = require('systeminformation');
+const MusicBot = require('../../structures/Client');
+
+module.exports = {
+  name: 'status',
+  category: 'Information',
+  description: 'Show bot status',
+  userPermissions: false,
+
+  /**
+   *
+   * @param {MusicBot} client The instantiating client
+   * @param {CommandInteraction} interaction The interaction
+   */
+  run: async (client, interaction) => {
+    const duration1 = moment.duration(client.uptime).format(' D [days], H [hrs], m [mins], s [secs]');
+    const cpu = await si.cpu();
+    const { about } = interaction.client.emoji;
+    const ccount = client.channels.cache.size;
+    const scount = client.guilds.cache.size;
+    let mcount = 0;
+    client.guilds.cache.forEach((guild) => {
+      mcount += guild.memberCount;
+    });
+    const embed = new EmbedBuilder()
+      .setColor(client.embedColor)
+      .setThumbnail(client.user.displayAvatarURL())
+      .setDescription(`${about} **Status**
+        **= STATISTICS =**
+        **• Servers** : ${scount}
+        **• Channels** : ${ccount}
+        **• Users** : ${mcount}
+        **• Discord.js** : v${version}
+        **• Node** : ${process.version}
+        **= SYSTEM =**
+        **• Platfrom** : ${os.type}
+        **• Uptime** : ${duration1}
+        **• CPU** :
+        > **• Cores** : ${cpu.cores}
+        > **• Model** : ${os.cpus()[0].model} 
+        > **• Speed** : ${os.cpus()[0].speed} MHz
+        **• MEMORY** :
+        > **• Total Memory** : ${(os.totalmem() / 1024 / 1024).toFixed(2)} Mb
+        > **• Free Memory** : ${(os.freemem() / 1024 / 1024).toFixed(2)} Mb
+        > **• Heap Total** : ${(process.memoryUsage().heapTotal / 1024 / 1024).toFixed(2)} Mb
+        > **• Heap Usage** : ${(process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2)} Mb
+        
+        > [Server Status](https://status-cloud.nyrat.id)
+      `);
+    interaction.reply({ embeds: [embed] });
+  },
+};

@@ -3,7 +3,10 @@
         "es2021": true,
         "node": true
     },
-    "extends": "airbnb-base",
+    "plugins": [
+        "jsdoc"
+    ],
+    "extends": ["airbnb-base", "plugin:jsdoc/recommended"],
     "overrides": [
     ],
     "parserOptions": {
@@ -11,5 +14,6 @@
         "sourceType": "module"
     },
     "rules": {
+        "import/extensions": "off"
     }
 }

@@ -1,0 +1,47 @@
+const {
+  EmbedBuilder, CommandInteraction, ButtonBuilder, ButtonStyle, ActionRowBuilder,
+} = require('discord.js');
+const MusicBot = require('../../structures/Client');
+
+module.exports = {
+  name: 'about',
+  category: 'Information',
+  description: 'See description about this bot',
+  userPermissions: false,
+
+  /**
+   *
+   * @param {MusicBot} client The instantiating client
+   * @param {CommandInteraction} interaction The interaction
+   */
+  run: async (client, interaction) => {
+    await interaction.deferReply();
+    const row = new ActionRowBuilder()
+      .addComponents(
+        new ButtonBuilder()
+          .setLabel('Invite')
+          .setStyle(ButtonStyle.Link)
+          .setURL(`https://discord.com/oauth2/authorize?client_id=${client.user.id}&scope=bot+identify+guilds+applications.commands&permissions=8`),
+        new ButtonBuilder()
+          .setLabel('GitHub')
+          .setStyle(ButtonStyle.Link)
+          .setURL('https://github.com/theskinnyrat'),
+        new ButtonBuilder()
+          .setLabel('Support')
+          .setStyle(ButtonStyle.Link)
+          .setURL('https://instagram.com/The.Skinny.Rat'),
+      );
+
+    const mainPage = new EmbedBuilder()
+      .setAuthor({ name: 'LavaMusic', iconURL: client.user.displayAvatarURL() })
+      .setThumbnail(client.user.displayAvatarURL())
+      .setColor('#303236')
+      .addFields(
+        { name: 'Creator & Maintainer', value: '[TheSkinnyRat](https://github.com/theskinnyrat)', inline: true },
+        { name: 'Fork From', value: '[brblacky/lavamusic](https://github.com/brblacky/lavamusic)', inline: true },
+        { name: 'Repository', value: 'Currently private', inline: true },
+        { name: '\u200b', value: 'TSR Music bot created using Node.JS. Server located in Singapore. Developed privately and unlicensed code.' },
+      );
+    return interaction.editReply({ embeds: [mainPage], components: [row] });
+  },
+};
